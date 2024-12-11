@@ -1,41 +1,63 @@
-let listing=require('./models/listing');
-const review = require('./models/review');
+const Listing =require("./models/listing"); 
+const Review =require("./models/review"); 
+const ExpressError = require("./utils/ExpressError.js");
+const {listingSchema} = require("./schema.js");
+const {reviewSchema} = require("./schema.js");
 
-
-module.exports.LogedIn=(req,res,next)=>{
+module.exports.isLoggedIn = (req ,res , next) => {
     if(!req.isAuthenticated()){
-        req.session.redirectURL=req.originalUrl;
-        req.flash('error','Login Your Account');
-        return res.redirect('/login');
-    }
-    else{
-        next();
-    }
-}
-module.exports.SaveRedirectUrl=(req,res,next)=>{
-    if(req.session.redirectURL){
-        res.locals.redirectUrl=req.session.redirectURL;
-    }
-    next();
-}
-module.exports.Owner=async(req,res,next)=>{
-    let {id}=req.params;
-    let list=await listing.findById(id).populate('owner');
-    if(!req.user._id.equals(list.owner._id)){
-        req.flash('error','Your Are Not the Creater of this list');
-        return res.redirect(`/listings/${id}`);    
+        req.session.redirectUrl = req.originalUrl;
+        req.flash("error","You are not logged in , Please login to access listing");
+        return res.redirect("/login");
     }
     next();
 };
 
-module.exports.isAuthor=async(req,res,next)=>{
-    let {id,reviewId}=req.params;
-    let currreview=await review.findById(reviewId);
-    if(currreview.owner.equals(req.user._id)){
-        next();
+module.exports.saveRedirectUrl = (req,res,next) => {
+    if(req.session.redirectUrl){
+        res.locals.redirectUrl = req.session.redirectUrl;
     }
-    else{
-        req.flash('error','Your Are Not the Author of this Review');
+    next();
+};
+
+module.exports.isOwner = async (req ,res ,next) => {
+    let {id} = req.params;
+    let listing = await Listing.findById(id)
+    if (!listing.owner._id.equals(res.locals.currUser._id)){
+        req.flash("error","You are not the owner of this listing!");
         return res.redirect(`/listings/${id}`);
     }
-}
+    next();
+};
+
+module.exports.validateListing = (req ,res , next) => {
+    let {error} = listingSchema.validate(req.body);
+    
+    if(error){
+        let errMsg = error.details.map((el) => el.message).join(",");
+              throw new ExpressError(400 , errMsg);
+    }else{
+        next();
+    }
+;}
+
+module.exports.validateReview = (req ,res , next) => {
+    let {error} = reviewSchema.validate(req.body);
+    
+    if(error){
+        let errMsg = error.details.map((el) => el.message).join(",");
+              throw new ExpressError(400 , errMsg);
+    }else{
+        next();
+    }
+};
+
+module.exports.isReviewAuthor = async (req ,res ,next) => {
+    let {id ,reviewId} = req.params;
+    let review = await Review.findById(reviewId);
+    if (!review.author.equals(res.locals.currUser._id)){
+        req.flash("error","You are not the author of this review!");
+        return res.redirect(`/listings/${id}`);
+    }
+    next();
+};

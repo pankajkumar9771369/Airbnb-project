@@ -1,22 +1,16 @@
-const express=require('express');
-const router=express.Router({mergeParams:true});
-const wrapAsync=require('../utils/wrapAsync');
-const ExpressError=require('../utils/ExpressError');
-const {reviewSchema}=require('../schema');
-const { LogedIn,isAuthor,} = require('../middleware');
-const ReviewController=require('../Controllers/reviews');
+const express = require("express");
+const router = express.Router({mergeParams:true});
+const wrapAsync = require("../utils/wrapAsync.js");
+const ExpressError = require("../utils/ExpressError.js");
+const {reviewSchema} = require("../schema.js");
+const Review = require("../models/review.js");
+const Listing = require("../models/listing.js");
+const {validateReview, isLoggedIn ,isReviewAuthor} = require("../middleware.js");
+const reviewController = require("../controllers/reviews.js");
+//Review Post Route
+router.post("/",isLoggedIn, validateReview , wrapAsync(reviewController.createReview));
 
-//Review Schema Validater
-const validateReview=(req,res,next)=>{
-    let{error}=reviewSchema.validate(req.body);
-    if(error) throw new ExpressError(400,error);
-    else next();
-}
+//DElete review route 
+router.delete("/:reviewId",isLoggedIn, isReviewAuthor,  wrapAsync(reviewController.deleteReview));
 
-//Review Routes
-router.post('/',LogedIn,validateReview,wrapAsync(ReviewController.CreateReview));
-
-//Delete Review
-router.delete('/:reviewId',LogedIn,isAuthor,ReviewController.DeleteReview);
-
-module.exports=router;
+module.exports = router;

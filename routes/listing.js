@@ -1,41 +1,33 @@
-const express=require('express');
-const router=express.Router();
-const wrapAsync=require('../utils/wrapAsync');
-const ExpressError=require('../utils/ExpressError');
-const {listingSchema}=require('../schema');
-const listing = require('../models/listing');
-const { LogedIn , Owner} = require('../middleware');
-const listingController=require('../Controllers/listings');
-const {storage}=require('../CloudConfig');
-const multer=require('multer');
-const upload=multer({storage});
+const express = require("express");
+const router = express.Router();
+const wrapAsync = require("../utils/wrapAsync.js");
+const ExpressError = require("../utils/ExpressError.js");
+const {listingSchema} = require("../schema.js");
+const Listing = require("../models/listing.js");
+const {isLoggedIn} = require("../middleware.js");
+const {isOwner} = require("../middleware.js");
+const {validateListing} = require("../middleware.js");
+const listingController = require("../controllers/listings.js");
+const multer  = require('multer');
+const {storage} = require("../CloudConfig.js");
+const upload = multer({ storage });
 
+router
+.route("/")
+.get( wrapAsync(listingController.index))
+.post(isLoggedIn,  upload.single("listing[image]"),validateListing, wrapAsync(listingController.createListing));
 
-//Validate ListingSchema
-const validateListing=(req,res,next)=>{
-    let{error}=listingSchema.validate(req.body);
-    if(error) throw new ExpressError(400,error);
-    else next();
-}
+//New Route
 
-// Start Route with /
-router.route('/')
-      .get(wrapAsync(listingController.RenderIndexPage))
-      // .post(LogedIn,validateListing,wrapAsync(listingController.CreateNewList));
-      .post(LogedIn,upload.single('listing[image]'),validateListing,wrapAsync(listingController.CreateNewList));
+router.get("/new",isLoggedIn,listingController.renderNewForm);
 
-// Route Start with /new
-router.get('/new',LogedIn,listingController.RenderNewPage);
+router
+.route("/:id")
+.get(wrapAsync(listingController.showListing))
+.put(isLoggedIn, isOwner, upload.single("listing[image]"),validateListing ,wrapAsync(listingController.updateListing))
+.delete(isLoggedIn, isOwner,  wrapAsync(listingController.deleteListing));
 
-//Start Route with /:id
-router.route('/:id')
-      .put(LogedIn,Owner,upload.single('listing[image]'),validateListing,wrapAsync(listingController.EditPage))
-      // .put(upload.single('listing[image]'),wrapAsync(listingController.EditPage))
-      .delete(LogedIn,Owner,wrapAsync(listingController.DeletePage))
-      .get(wrapAsync(listingController.RenderShowPage))
+//Edit Route
+router.get("/:id/edit", isLoggedIn,  isOwner, wrapAsync(listingController.editListing));
 
-// Edit Route /:id/Edit
-router.get('/:id/edit' ,LogedIn,Owner,wrapAsync(listingController.RenderEditPage));
-
-module.exports=router;
-
+module.exports = router;

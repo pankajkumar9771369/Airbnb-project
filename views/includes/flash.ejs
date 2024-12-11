@@ -1,17 +1,13 @@
-<% if(success && success.length){ %>
-    <div class="row">
-        <div class="alert alert-success alert-dismissible fade show col-6 offset-3" role="alert">
-            <strong><%= success %></strong>
+<% if(success && success.length){%>
+    <div class="alert alert-success alert-dismissible fade show col-6 offset-3" role="alert">
+        <%= success %>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
     </div>
-<% } %>
-
-<% if(error && error.length){ %>
-    <div class="row">
-        <div class="alert alert-warning alert-dismissible fade show col-6 offset-3" role="alert">
-            <strong><%= error %></strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    </div>
-<% } %>
+    <% } %>
+<!-- error -->
+        <% if(error && error.length){%>
+            <div class="alert alert-danger alert-dismissible fade show col-6 offset-3" role="alert">
+                <%= error %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+                    <% } %>

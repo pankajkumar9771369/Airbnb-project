@@ -1,70 +1,53 @@
-<% layout('/layouts/boilerplate.ejs') -%>
+<% layout("/layouts/boilerplate.ejs") %>
 <body>
-    <h1 class="heading"> Add new Bucket</h1>
-    <form method="post" action="/listings" class="row g-3 needs-validation" novalidate enctype="multipart/form-data">
+<div class="row mt-3">
+    <div class="col-8 offset-2" >
+    <h3>Create a new listing</h3>
+    <form action="/listings" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" name="listing[title]" placeholder="Add a catchy title" class="form-control" required>
+            <div class="valid-feedback"> Title looks good!</div>
+            <div class="invalid-feedback">Please enter a catchy title!</div> 
+        </div>
+
+        <div class="mb-3">
+            <label  for="description" class="form-label" >Description</label>
+            <textarea type="text" name="listing[description]" class="form-control" required></textarea>
+            <div class="invalid-feedback">Please enter a short description!</div> 
+        </div>
+
+        
+        <div class="mb-3">
+            <label  for="image" class="form-label">Upload listing image</label>
+            <input type="file" name="listing[image]" class="form-control" required>
+        </div>
+
         <div class="row">
-            <div class="col-8 offset-2">
-                <div class="mb-3">
-                    <label for="title" class="form-label">Title</label>
-                    <input type="text" name="listing[title]" placeholder="Enter URL" class="form-control" required>
-                    <div class="valid-feedback">Title Looks good!</div>  
-                    <div class="invalid-feedback">Please enter the title</div>  
-                </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea name="listing[description]"
-                     cols="30" rows="3" 
-                     placeholder="Enter Description"
-                     id="description"
-                     class="form-control" required></textarea>
-                     <div class="valid-feedback">Done</div>  
-                    <div class="invalid-feedback">Please enter the Description</div>  
-                </div>
-                  <div class="mb-3">
-                    <label for="formFile" class="form-label">Upload Image</label>
-                    <input class="form-control" name="listing[image]" type="file" id="formFile" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="formFile" class="form-label">Category</label>
-                    <select class="form-select" aria-label="Default select example" name="listing[category]">
-                        <option selected>Trending</option>
-                        <option value="Rooms">Rooms</option>
-                        <option value="Iconic Center">Iconic Center</option>
-                        <option value="mountains">mountains</option>
-                        <option value="castles">castles</option>
-                        <option value="Amazing pools">Amazing pools</option>
-                        <option value="Camping">Camping</option>
-                        <option value="farms">farms</option>
-                        <option value="Arctic">Arctic</option>
-                        <option value="Domes">Domes</option>
-                        <option value="Boats">Boats</option>
-                        <option value="Creative Spaces">Creative Spaces</option>
-                        <option value="Golfing">Golfing</option>
-                        <option value="Beach">Beach</option>
-                    </select>
-                  </div>
-                  <div class="row">
-                    <div class="mb-3 col-md-4">
-                        <label for="price" class="form-label">Price</label>
-                        <input type="number" name="listing[price]" placeholder="Enter Price" class="form-control" required>
-                        <div class="valid-feedback">Done</div>  
-                        <div class="invalid-feedback">Please enter the Price</div>  
-                    </div>
-                    <div class="mb-3 col-md-8">
-                        <label for="location" class="form-label">Location</label>
-                        <input type="text" name="listing[location]" placeholder="Enter Location" class="form-control" required>
-                        <div class="valid-feedback">Done</div>  
-                        <div class="invalid-feedback">Please enter the Location</div>  
-                    </div>
-                  </div>
-                  <div class="mb-3">
-                      <label for="country" class="form-label">Country</label>
-                      <input type="text" name="listing[country]" placeholder="Enter Country" class="form-control" required>
-                      <div class="valid-feedback">Done</div>  
-                      <div class="invalid-feedback">Please enter the Country</div>  
-                    </div>
-                  <button type="submit" class="btn btn-dark add-btn">Add</button>
+            <div class="mb-3 col-md-4">
+                <label  for="price" class="form-label">Price</label >
+                <input  name="listing[price]" placeholder="1200" class="form-control" required>
+                <div class="invalid-feedback">Please enter a valid number!</div> 
+    
+            </div>
+
+            <div class="mb-3 col-md-8">
+                <label for="country" class="form-label">Country</label>
+                <input type="text" name="listing[country]" placeholder="India" class="form-control" required>
+                <div class="invalid-feedback">Please enter country name!</div> 
             </div>
         </div>
+
+        
+
+        <div class="mb-3">
+            <label  for="location" class="form-label">Location</label>
+            <input type="text" name="listing[location]" placeholder="IIT JAMMU,JAMMU & KASHMIR"  class="form-control" required >
+            <div class="invalid-feedback">Please enter the location!</div> 
+        </div>
+        
+        <button class="btn btn-dark add-btn mt-3">Add</button>
     </form>
+</div>
+</div>
 </body>
