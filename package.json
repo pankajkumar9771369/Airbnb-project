@@ -1,4 +1,8 @@
 {
+  "engines": {
+  "node": "v20.17.0"
+  
+},
   "name": "hotel-management-web",
   "version": "1.0.0",
   "main": "app.js",
