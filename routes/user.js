@@ -4,8 +4,8 @@ const User = require("../models/user.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const passport = require("passport");
 const {saveRedirectUrl} = require("../middleware.js");
-const { signUp } = require("../controllers/users.js");
-const userController = require("../controllers/users.js");
+const { signUp } = require("../Controllers/users.js");
+const userController = require("../Controllers/users.js");
 
 router
 .route("/signup")
